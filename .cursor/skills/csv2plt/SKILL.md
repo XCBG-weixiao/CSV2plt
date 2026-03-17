@@ -9,17 +9,19 @@ description: Automates CSV profiling and plotting (missingness, distributions, b
 - 用户提到：CSV、pandas、matplotlib、seaborn、数据分析、画像(profile)、出图、plt、相关性、缺失值、直方图、箱线图、热力图。
 
 ## 你要做什么（高层目标）
-把一份 CSV 自动跑通：
+把一份 CSV + 用户中文需求自动跑通：
 1) 读取与参数探测（编码/分隔符/坏行策略）
 2) 数据画像（概要 + 关键统计 + 列类型推断）
-3) 自动基础分析图集输出到 `artifacts/`
-4) 汇总报告 `artifacts/report.md`（包含关键发现与复现命令）
+3) **把中文需求解析成 ChartSpec**（`artifacts/spec.json`）
+4) **按 ChartSpec 生成指定图表**（例如：排序柱状图 TopK 红色高亮、按月趋势折线图）
+5) 输出**分析文档** `artifacts/report.md`（需求复述/口径/字段映射/图表清单/关键发现/复现命令）
 
 ## 工作流（严格按顺序执行）
 
 ### Step 0: 获取输入
 向用户确认/收集（若用户没给就给默认值并继续）：
 - CSV 路径（相对或绝对）
+- 用户中文需求（自由表达，尽量包含：按谁分组、要画什么图、TopK/颜色规则、是否按月趋势）
 - 分隔符（未知则自动探测）
 - 编码（未知则自动探测；常见：utf-8/utf-8-sig/gbk）
 - 是否需要抽样（默认：大于 200k 行时自动抽样用于散点/两两散点）
@@ -38,9 +40,22 @@ description: Automates CSV profiling and plotting (missingness, distributions, b
 你要检查的关键输出：
 - `artifacts/profile.json` 中是否包含：`shape`、`columns`、`numeric_columns`、`datetime_columns`、`categorical_columns`、`read_params`
 
-### Step 3: 自动基础出图
-运行：
-- `python scripts/plot_csv.py --input "<CSV_PATH>" --profile artifacts/profile.json --outdir artifacts/plots --report artifacts/report.md`
+### Step 3: 按用户需求生成图与报告（ChartSpec 模式）
+运行（推荐）：
+- `python scripts/plot_csv.py --input "<CSV_PATH>" --profile artifacts/profile.json --request "<用户中文需求>" --outdir artifacts/plots --report artifacts/report.md`
+
+说明：
+- 该命令会自动生成 `artifacts/spec.json`（ChartSpec），并按 spec 生成图表与报告。
+- 目前最小可用支持：
+  - 排序柱状图 + TopK 高亮（例如“前两名柱状图用红色”）
+  - 按月趋势折线图（例如“各科室每个月的折线图走势”；需要时间列可解析，如“离职时间”）
+
+如果你已经有 spec 文件，也可以直接执行：
+- `python scripts/plot_csv.py --input "<CSV_PATH>" --spec artifacts/spec.json --mode spec --outdir artifacts/plots --report artifacts/report.md`
+
+### Step 3b: 兼容旧用法（基础图集模式）
+如果用户没有给明确需求，或只是想要基础探索图集，运行：
+- `python scripts/plot_csv.py --input "<CSV_PATH>" --profile artifacts/profile.json --mode base --outdir artifacts/plots --report artifacts/report.md`
 
 默认图集（自动基础包）应包含：
 - 缺失值条形图（按缺失率排序）
@@ -52,7 +67,7 @@ description: Automates CSV profiling and plotting (missingness, distributions, b
 
 ### Step 4: 输出汇总给用户
 给用户一个简短总结（不需要贴所有代码/图片）：
-- 关键发现（缺失最严重列、疑似异常/离群、最高相关性对）
+- 关键发现（Top 分组、离职高峰月份、解析警告/假设）
 - 产物位置：`artifacts/profile.md`、`artifacts/report.md`、`artifacts/plots/`
 - 复现命令（从 report.md 复制）
 

@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "request": "按离职科室统计离职人数并排序,前两名柱状图用红色;各科室每个月的折线图走势",
+  "mapping": {
+    "group_column": "离职科室",
+    "time_column": "离职时间",
+    "month_column": "离职月份"
+  },
+  "charts": [
+    {
+      "type": "bar_rank",
+      "dimension": "离职科室",
+      "metric": {
+        "type": "count_rows"
+      },
+      "sort": {
+        "by": "metric",
+        "order": "desc"
+      },
+      "style": {
+        "highlight_top_k": 2,
+        "highlight_color": "red"
+      },
+      "title": "按维度排序（离职人数）"
+    },
+    {
+      "type": "line_monthly",
+      "time_column": "离职时间",
+      "month_column": "离职月份",
+      "dimension": "离职科室",
+      "metric": {
+        "type": "count_rows"
+      },
+      "limits": {
+        "top_n": 10,
+        "others_bucket": true
+      },
+      "title": "按月趋势（离职人数）"
+    }
+  ],
+  "warnings": []
+}

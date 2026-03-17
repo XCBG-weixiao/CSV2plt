@@ -99,11 +99,33 @@ def fmt_pct(x: float) -> str:
 
 
 def safe_filename(name: str) -> str:
-    # Minimal cross-platform safe filename.
+    """
+    Cross-platform safe filename.
+
+    - Keep ASCII letters/digits and a small set of separators.
+    - Replace everything else (including CJK) with '_' so Windows terminals/filesystems
+      won't produce mojibake.
+    - Append a short hash to keep uniqueness.
+    """
+    import re
+    import zlib
+
+    raw = (name or "").strip()
+    if not raw:
+        raw = "col"
+
+    # Replace Windows-forbidden characters first.
     bad = '<>:"/\\|?*'
-    out = "".join("_" if c in bad else c for c in name)
-    out = out.strip().strip(".")
-    return out or "unnamed"
+    cleaned = "".join("_" if c in bad else c for c in raw)
+
+    # Keep ASCII alnum + _-. ; replace others with underscore.
+    cleaned = re.sub(r"[^A-Za-z0-9_.-]+", "_", cleaned)
+    cleaned = cleaned.strip("._-")
+    if not cleaned:
+        cleaned = "col"
+
+    h = zlib.adler32(raw.encode("utf-8")) & 0xFFFFFFFF
+    return f"{cleaned}_{h:08x}"
 
 
 def top_abs_correlations(corr_df, k: int = 10) -> List[Tuple[str, str, float]]:
