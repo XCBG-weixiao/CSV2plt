@@ -1,0 +1,117 @@
+{
+  "input": {
+    "path": "data\\sample.csv"
+  },
+  "shape": {
+    "rows": 10,
+    "cols": 6
+  },
+  "read_params": {
+    "encoding": "utf-8-sig",
+    "delimiter": ","
+  },
+  "columns": [
+    {
+      "name": "id",
+      "dtype": "int64",
+      "non_null": 10,
+      "missing": 0,
+      "missing_rate": 0.0,
+      "nunique": 10,
+      "numeric": {
+        "count": 10.0,
+        "mean": 5.5,
+        "std": 3.0276503540974917,
+        "min": 1.0,
+        "1%": 1.09,
+        "5%": 1.45,
+        "25%": 3.25,
+        "50%": 5.5,
+        "75%": 7.75,
+        "95%": 9.549999999999999,
+        "99%": 9.91,
+        "max": 10.0
+      }
+    },
+    {
+      "name": "group",
+      "dtype": "object",
+      "non_null": 10,
+      "missing": 0,
+      "missing_rate": 0.0,
+      "nunique": 3
+    },
+    {
+      "name": "value_a",
+      "dtype": "float64",
+      "non_null": 9,
+      "missing": 1,
+      "missing_rate": 0.1,
+      "nunique": 9,
+      "numeric": {
+        "count": 9.0,
+        "mean": 12.333333333333334,
+        "std": 6.2048368229954285,
+        "min": 5.0,
+        "1%": 5.08,
+        "5%": 5.4,
+        "25%": 7.0,
+        "50%": 11.0,
+        "75%": 19.0,
+        "95%": 20.6,
+        "99%": 20.92,
+        "max": 21.0
+      }
+    },
+    {
+      "name": "value_b",
+      "dtype": "int64",
+      "non_null": 10,
+      "missing": 0,
+      "missing_rate": 0.0,
+      "nunique": 10,
+      "numeric": {
+        "count": 10.0,
+        "mean": 114.1,
+        "std": 62.59472821252601,
+        "min": 55.0,
+        "1%": 55.27,
+        "5%": 56.35,
+        "25%": 61.25,
+        "50%": 99.0,
+        "75%": 174.0,
+        "95%": 202.75,
+        "99%": 204.55,
+        "max": 205.0
+      }
+    },
+    {
+      "name": "ts",
+      "dtype": "object",
+      "non_null": 10,
+      "missing": 0,
+      "missing_rate": 0.0,
+      "nunique": 4
+    },
+    {
+      "name": "flag",
+      "dtype": "object",
+      "non_null": 9,
+      "missing": 1,
+      "missing_rate": 0.1,
+      "nunique": 2
+    }
+  ],
+  "numeric_columns": [
+    "id",
+    "value_a",
+    "value_b"
+  ],
+  "datetime_columns": [
+    "ts"
+  ],
+  "categorical_columns": [
+    "group",
+    "flag"
+  ]
+}
